@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://cn52i8ruiwrla"]
+
+[ext_resource type="PhysicsMaterial" uid="uid://bpmgb7j5k4ffn" path="res://material_smooth.tres" id="1_4oex4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dii0q"]
+
+[node name="wall" type="RigidBody2D"]
+physics_material_override = ExtResource("1_4oex4")
+freeze = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(10, 1)
+shape = SubResource("RectangleShape2D_dii0q")
