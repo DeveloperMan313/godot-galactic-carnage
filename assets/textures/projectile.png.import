@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cb5jwo6hkm0qn"
-path="res://.godot/imported/laserbeam.png-e03ef56ae1805d478396d1cb6a70bba9.ctex"
+uid="uid://bpnu480xtrlsu"
+path="res://.godot/imported/projectile.png-67bec0b87061a9ccc594cbbe0319db8c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://textures/laserbeam.png"
-dest_files=["res://.godot/imported/laserbeam.png-e03ef56ae1805d478396d1cb6a70bba9.ctex"]
+source_file="res://assets/textures/projectile.png"
+dest_files=["res://.godot/imported/projectile.png-67bec0b87061a9ccc594cbbe0319db8c.ctex"]
 
 [params]
 

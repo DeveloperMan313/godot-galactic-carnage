@@ -1,7 +1,7 @@
 extends Node
 
 
-const projectile_texture = preload("res://projectile_texture.tres")
+const projectile_texture = preload("res://resources/textures/projectile.tres")
 
 const sprite_scale = 5
 const sprite_distance = 10

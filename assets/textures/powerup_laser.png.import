@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b70w6iopqmoaj"
-path="res://.godot/imported/player_weak.png-303ec7ced2a6bd41004d8eb0dc3ab80b.ctex"
+uid="uid://dmyjf2nhr3we"
+path="res://.godot/imported/powerup_laser.png-db871d86b024f27d6d7a39e59d8cdd83.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://textures/player_weak.png"
-dest_files=["res://.godot/imported/player_weak.png-303ec7ced2a6bd41004d8eb0dc3ab80b.ctex"]
+source_file="res://assets/textures/powerup_laser.png"
+dest_files=["res://.godot/imported/powerup_laser.png-db871d86b024f27d6d7a39e59d8cdd83.ctex"]
 
 [params]
 

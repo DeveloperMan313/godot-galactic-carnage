@@ -1,7 +1,7 @@
 extends RigidBody2D
 
 
-const projectile_scene = preload("res://projectile.tscn")
+const projectile_scene = preload("res://scenes/projectile.tscn")
 
 const thrust = 300
 const friction = 1
@@ -11,7 +11,7 @@ const projectile_spawn_margin = 5
 const max_ammo = 3
 const reload_time = 1
 
-var hb_radius: float
+@onready var hb_radius: float = $CollisionShape2D.shape.radius
 var ang_vel := 0.0
 var rot_dir := 1
 var reload_timer := Timer.new()
@@ -19,7 +19,6 @@ var ammo := 0
 
 
 func _ready() -> void:
-	hb_radius = $CollisionShape2D.shape.radius
 	reload_timer.one_shot = true
 	reload_timer.timeout.connect(reload)
 	add_child(reload_timer)

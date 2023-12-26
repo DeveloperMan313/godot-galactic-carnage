@@ -1,0 +1,27 @@
+[gd_scene load_steps=6 format=3 uid="uid://blc8dfc0kunat"]
+
+[ext_resource type="PhysicsMaterial" uid="uid://bpmgb7j5k4ffn" path="res://resources/materials/smooth.tres" id="1_yfus1"]
+[ext_resource type="Script" path="res://scripts/player.gd" id="2_2ld3c"]
+[ext_resource type="Texture2D" uid="uid://cafto38l13rcm" path="res://resources/textures/player.tres" id="3_t14nm"]
+[ext_resource type="Script" path="res://scripts/player_ammo.gd" id="4_ttef7"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ottf4"]
+radius = 40.0
+
+[node name="Player" type="RigidBody2D"]
+physics_material_override = ExtResource("1_yfus1")
+lock_rotation = true
+max_contacts_reported = 10
+contact_monitor = true
+script = ExtResource("2_2ld3c")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(5, 0)
+scale = Vector2(5, 5)
+texture = ExtResource("3_t14nm")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ottf4")
+
+[node name="AmmoIndicator" type="Node" parent="."]
+script = ExtResource("4_ttef7")
