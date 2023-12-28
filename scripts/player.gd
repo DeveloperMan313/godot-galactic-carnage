@@ -11,11 +11,12 @@ const projectile_spawn_margin = 5
 const max_ammo = 3
 const reload_time = 1
 
-@export var id := 1 :
-	set(new_id):
-		id = new_id
-		set_multiplayer_authority(id, false)
+@export var id := 1
+@export var ammo := 0
+@export var time_until_reload = reload_time
 
+@onready var synchronizer = $MultiplayerSynchronizer
+@onready var physics_synchronizer = $PhysicsSynchronizer
 @onready var ammo_indicator = $AmmoIndicator
 @onready var hb_radius: float = $CollisionShape2D.shape.radius
 @onready var projectile_mass: float = projectile_scene.instantiate().mass
@@ -23,19 +24,22 @@ const reload_time = 1
 var ang_vel := 0.0
 var rot_dir := 1
 var reload_timer := Timer.new()
-var ammo := 0
+var new_physics_sync := false
 
 
 func _ready():
 	reload_timer.one_shot = true
 	reload_timer.timeout.connect(reload)
 	add_child(reload_timer)
-	reload_timer.start(reload_time)
+	reload_timer.start(time_until_reload)
 	connect("body_entered", on_collision)
-	ammo_indicator.init_ammo_indicator()
-	$MultiplayerSynchronizer.set_multiplayer_authority(1)
+	ammo_indicator.init_ammo_indicator(self, ammo, max_ammo)
+	set_multiplayer_authority(id, false)
+	synchronizer.set_multiplayer_authority(1)
+	physics_synchronizer.set_multiplayer_authority(1)
 	set_process_input(get_multiplayer_authority() == \
 		multiplayer.get_unique_id())
+	set_physics_process(multiplayer.is_server())
 
 
 func _input(event):
@@ -50,7 +54,17 @@ func _input(event):
 
 
 func _physics_process(_delta):
-	angular_velocity = ang_vel
+	physics_synchronizer.server_physics_sync(self)
+	time_until_reload = reload_timer.time_left
+	if time_until_reload == 0:
+		time_until_reload = reload_time
+
+
+func _integrate_forces(_state):
+	if physics_synchronizer.client_physics_sync(self):
+		ang_vel = angular_velocity
+	else:
+		angular_velocity = ang_vel
 	apply_central_force(Vector2.RIGHT.rotated(rotation) * thrust \
 		- friction * linear_velocity)
 
@@ -65,7 +79,7 @@ func stop_rotation() -> void:
 	ang_vel = 0
 
 
-@rpc("call_local")
+@rpc("call_local", "reliable")
 func shoot() -> void:
 	reload_timer.start(reload_time)
 	if ammo == 0:
@@ -89,6 +103,8 @@ func shoot() -> void:
 
 
 func reload() -> void:
+	if ammo == max_ammo:
+		return
 	ammo += 1
 	ammo_indicator.update(ammo)
 	if ammo < max_ammo:

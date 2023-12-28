@@ -9,22 +9,14 @@ const PLAYER_SCENE = preload("res://scenes/objects/player.tscn")
 
 
 func _ready():
-	multiplayer.connect("peer_connected", on_peer_connected)
-	multiplayer.connect("peer_disconnected", on_peer_disconnected)
 	multiplayer_option_menu.visible = true
 
 
 func on_peer_connected(id: int) -> void:
-	if not multiplayer.is_server():
-		return
-	print("connected peer with id ", id)
 	add_player(id)
 
 
 func on_peer_disconnected(id: int) -> void:
-	if not multiplayer.is_server():
-		return
-	print("disconnected peer with id ", id)
 	delete_player(id)
 
 
@@ -41,17 +33,17 @@ func on_connect_pressed() -> void:
 
 func on_connected_to_server() -> void:
 	print("connected to server")
-	add_player(multiplayer.get_unique_id())
 
 
 func on_connection_failed() -> void:
-	print("connection failed")
 	multiplayer.multiplayer_peer = null
 	multiplayer_option_menu.visible = true
 
 
 func on_server_disconnected() -> void:
-	print("disconnection from server")
+	multiplayer.disconnect("connected_to_server", on_connected_to_server)
+	multiplayer.disconnect("connection_failed", on_connection_failed)
+	multiplayer.disconnect("server_disconnected", on_server_disconnected)
 	multiplayer.multiplayer_peer = null
 	multiplayer_option_menu.visible = true
 
@@ -60,20 +52,24 @@ func on_host_pressed() -> void:
 	var peer = ENetMultiplayerPeer.new()
 	peer.create_server(PORT)
 	multiplayer.multiplayer_peer = peer
+	multiplayer.connect("peer_connected", on_peer_connected)
+	multiplayer.connect("peer_disconnected", on_peer_disconnected)
 	print("hosting on port ", PORT)
 	multiplayer_option_menu.visible = false
+	if not OS.has_feature("dedicated_server"):
+		add_player(1)
 
 
 func add_player(id: int) -> void:
 	var player = PLAYER_SCENE.instantiate()
 	player.id = id
-	player.name = "player" + str(id)
+	player.name = str(id)
 	player.position = Vector2(200, 200)
 	map.add_child(player)
 
 
 func delete_player(id: int) -> void:
-	var player_name = "player" + str(id)
+	var player_name = str(id)
 	if not map.has_node(player_name):
 		return
 	map.get_node(player_name).queue_free()

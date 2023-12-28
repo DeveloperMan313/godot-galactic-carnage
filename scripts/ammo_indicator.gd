@@ -7,15 +7,16 @@ const sprite_scale = 5
 const sprite_distance = 10
 const rotation_speed = PI
 
-var max_ammo: int
 var ammo := 0
+var max_ammo: int
 var player: RigidBody2D
 var sprites: Array[Sprite2D]
 
 
-func init_ammo_indicator() -> void:
-	player = get_parent()
-	max_ammo = player.max_ammo
+func init_ammo_indicator(init_player: Node, init_ammo: int, init_max_ammo: int) -> void:
+	player = init_player
+	ammo = init_ammo
+	max_ammo = init_max_ammo
 	for i in range(max_ammo):
 		var projectile_sprite = Sprite2D.new()
 		projectile_sprite.texture = projectile_texture
@@ -25,6 +26,7 @@ func init_ammo_indicator() -> void:
 		projectile_sprite.visible = false
 		sprites.append(projectile_sprite)
 		add_child(projectile_sprite)
+	update(ammo)
 
 
 func update(new_ammo: int) -> void:

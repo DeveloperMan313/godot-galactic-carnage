@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://b7xwpb6f867lh"]
 
-[ext_resource type="PackedScene" uid="uid://pavgwd0djbid" path="res://scenes/main_controller.tscn" id="1_j17lp"]
+[ext_resource type="PackedScene" uid="uid://pavgwd0djbid" path="res://scenes/controllers/main_controller.tscn" id="1_j17lp"]
 [ext_resource type="Script" path="res://scripts/main_controller.gd" id="2_8vb07"]
 
 [node name="Root" type="Node"]
@@ -35,7 +35,7 @@ theme_override_font_sizes/font_size = 48
 text = "Host"
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="MainController"]
-_spawnable_scenes = PackedStringArray("res://scenes/objects/projectile.tscn")
+_spawnable_scenes = PackedStringArray("res://scenes/objects/player.tscn", "res://scenes/objects/projectile.tscn")
 spawn_path = NodePath("../Map")
 
 [node name="Map" type="Node2D" parent="MainController"]

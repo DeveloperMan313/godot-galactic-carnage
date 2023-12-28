@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://blc8dfc0kunat"]
+[gd_scene load_steps=8 format=3 uid="uid://blc8dfc0kunat"]
 
 [ext_resource type="PhysicsMaterial" uid="uid://bpmgb7j5k4ffn" path="res://resources/materials/smooth.tres" id="1_yfus1"]
 [ext_resource type="Script" path="res://scripts/player.gd" id="2_2ld3c"]
 [ext_resource type="Texture2D" uid="uid://cafto38l13rcm" path="res://resources/textures/player.tres" id="3_t14nm"]
-[ext_resource type="Script" path="res://scripts/player_ammo.gd" id="4_ttef7"]
+[ext_resource type="Script" path="res://scripts/ammo_indicator.gd" id="4_6jglu"]
+[ext_resource type="PackedScene" uid="uid://jah6fajt0wlt" path="res://scenes/controllers/physics_synchronizer.tscn" id="5_dm32l"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ottf4"]
 radius = 40.0
@@ -11,10 +12,19 @@ radius = 40.0
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_htwdw"]
 properties/0/path = NodePath(".:position")
 properties/0/spawn = true
-properties/0/replication_mode = 1
-properties/1/path = NodePath(".:linear_velocity")
+properties/0/replication_mode = 0
+properties/1/path = NodePath(".:rotation")
 properties/1/spawn = true
-properties/1/replication_mode = 1
+properties/1/replication_mode = 0
+properties/2/path = NodePath(".:id")
+properties/2/spawn = true
+properties/2/replication_mode = 0
+properties/3/path = NodePath(".:ammo")
+properties/3/spawn = true
+properties/3/replication_mode = 0
+properties/4/path = NodePath(".:time_until_reload")
+properties/4/spawn = true
+properties/4/replication_mode = 0
 
 [node name="Player" type="RigidBody2D"]
 physics_material_override = ExtResource("1_yfus1")
@@ -32,7 +42,9 @@ texture = ExtResource("3_t14nm")
 shape = SubResource("CircleShape2D_ottf4")
 
 [node name="AmmoIndicator" type="Node" parent="."]
-script = ExtResource("4_ttef7")
+script = ExtResource("4_6jglu")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_htwdw")
+
+[node name="PhysicsSynchronizer" parent="." instance=ExtResource("5_dm32l")]
