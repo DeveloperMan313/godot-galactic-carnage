@@ -1,19 +1,44 @@
-[gd_scene load_steps=3 format=3 uid="uid://h2g63snb6wno"]
+[gd_scene load_steps=3 format=3 uid="uid://b7xwpb6f867lh"]
 
-[ext_resource type="PackedScene" uid="uid://blc8dfc0kunat" path="res://scenes/player.tscn" id="1_730tp"]
-[ext_resource type="PackedScene" uid="uid://cn52i8ruiwrla" path="res://scenes/wall.tscn" id="2_12ak3"]
+[ext_resource type="PackedScene" uid="uid://pavgwd0djbid" path="res://scenes/main_controller.tscn" id="1_j17lp"]
+[ext_resource type="Script" path="res://scripts/main_controller.gd" id="2_8vb07"]
 
-[node name="root" type="Node2D"]
+[node name="Root" type="Node"]
 
-[node name="player" parent="." instance=ExtResource("1_730tp")]
-position = Vector2(340, 283)
+[node name="MainController" parent="." instance=ExtResource("1_j17lp")]
+script = ExtResource("2_8vb07")
 
-[node name="wall" parent="." instance=ExtResource("2_12ak3")]
-position = Vector2(696, 316)
-rotation = -0.785397
+[node name="UI" type="Node" parent="MainController"]
 
-[node name="wall2" parent="." instance=ExtResource("2_12ak3")]
-position = Vector2(673, 242)
+[node name="MultiplayerOptionMenu" type="VBoxContainer" parent="MainController/UI"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -77.0
+offset_right = 150.0
+offset_bottom = 77.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="player2" parent="." instance=ExtResource("1_730tp")]
-position = Vector2(129, 284)
+[node name="Connect" type="Button" parent="MainController/UI/MultiplayerOptionMenu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Connect"
+
+[node name="Host" type="Button" parent="MainController/UI/MultiplayerOptionMenu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Host"
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="MainController"]
+_spawnable_scenes = PackedStringArray("res://scenes/objects/projectile.tscn")
+spawn_path = NodePath("../Map")
+
+[node name="Map" type="Node2D" parent="MainController"]
+
+[connection signal="pressed" from="MainController/UI/MultiplayerOptionMenu/Connect" to="MainController" method="on_connect_pressed"]
+[connection signal="pressed" from="MainController/UI/MultiplayerOptionMenu/Host" to="MainController" method="on_host_pressed"]

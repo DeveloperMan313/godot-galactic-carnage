@@ -33,7 +33,7 @@ func update(new_ammo: int) -> void:
 	ammo = new_ammo
 
 
-func _process(delta) -> void:
+func _process(delta):
 	for sprite in sprites:
 		sprite.position = player.position
 		sprite.rotation += delta * rotation_speed
