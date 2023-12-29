@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://bb4gcfxrnlv1k"]
 
 [ext_resource type="Script" path="res://scripts/projectile.gd" id="1_0c10w"]
-[ext_resource type="Texture2D" uid="uid://c7tcr7reduys1" path="res://resources/textures/projectile.tres" id="2_ljrev"]
+[ext_resource type="Texture2D" uid="uid://bpnu480xtrlsu" path="res://assets/textures/projectile.png" id="2_6konl"]
 [ext_resource type="PackedScene" uid="uid://jah6fajt0wlt" path="res://scenes/controllers/physics_synchronizer.tscn" id="3_3tbfe"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_wmc6d"]
@@ -22,7 +22,7 @@ script = ExtResource("1_0c10w")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(5, 5)
-texture = ExtResource("2_ljrev")
+texture = ExtResource("2_6konl")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_wmc6d")
