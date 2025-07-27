@@ -7,7 +7,6 @@ extends RigidBody2D
 
 func _ready():
 	connect("body_entered", _on_collision)
-	set_multiplayer_authority(1)
 
 
 func _integrate_forces(_state):

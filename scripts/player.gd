@@ -15,7 +15,6 @@ const reload_time = 1
 @export var ammo := 0
 @export var time_until_reload = reload_time
 
-@onready var synchronizer = $MultiplayerSynchronizer
 @onready var physics_synchronizer = $PhysicsSynchronizer
 @onready var ammo_indicator = $AmmoIndicator
 @onready var edge_warp = $EdgeWarp
@@ -25,7 +24,6 @@ const reload_time = 1
 var ang_vel := 0.0
 var rot_dir := 1
 var reload_timer := Timer.new()
-var new_physics_sync := false
 
 
 func _ready():
@@ -35,11 +33,7 @@ func _ready():
 	reload_timer.start(time_until_reload)
 	connect("body_entered", _on_collision)
 	ammo_indicator.init_ammo_indicator(self, ammo, max_ammo)
-	set_multiplayer_authority(id, false)
-	synchronizer.set_multiplayer_authority(1)
-	physics_synchronizer.set_multiplayer_authority(1)
-	set_process_input(get_multiplayer_authority() == \
-		multiplayer.get_unique_id())
+	set_process_input(multiplayer.get_unique_id() == id)
 	set_process(multiplayer.is_server())
 
 
@@ -71,17 +65,17 @@ func _integrate_forces(_state):
 		- friction * linear_velocity)
 
 
-@rpc("call_local")
+@rpc("any_peer", "call_local", "reliable")
 func start_rotation() -> void:
 	ang_vel = rot_dir * rot_speed
 
 
-@rpc("call_local")
+@rpc("any_peer", "call_local", "reliable")
 func stop_rotation() -> void:
 	ang_vel = 0
 
 
-@rpc("call_local", "reliable")
+@rpc("any_peer", "call_local", "reliable")
 func shoot() -> void:
 	reload_timer.start(reload_time)
 	if ammo == 0:

@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://b7xwpb6f867lh"]
+[gd_scene load_steps=6 format=3 uid="uid://b7xwpb6f867lh"]
 
 [ext_resource type="PackedScene" uid="uid://pavgwd0djbid" path="res://scenes/controllers/network.tscn" id="1_j17lp"]
 [ext_resource type="Script" path="res://scripts/network.gd" id="2_8vb07"]
+[ext_resource type="PackedScene" uid="uid://dvxmsq43qax2l" path="res://scenes/controllers/player_controller.tscn" id="2_tg68u"]
 [ext_resource type="Script" path="res://scripts/ui_multiplayer.gd" id="3_7biaq"]
-[ext_resource type="PackedScene" uid="uid://drijtvn1ctpuw" path="res://scenes/objects/Room.tscn" id="4_osgil"]
+[ext_resource type="PackedScene" uid="uid://drijtvn1ctpuw" path="res://scenes/objects/room.tscn" id="4_osgil"]
 
 [node name="Root" type="Node"]
 
@@ -106,6 +107,9 @@ theme_override_constants/margin_top = 20
 layout_mode = 2
 theme_override_font_sizes/font_size = 48
 text = "Back"
+
+[node name="PlayerController" parent="UI" instance=ExtResource("2_tg68u")]
+color = Color(1, 0.45098, 0, 1)
 
 [node name="Network" parent="." instance=ExtResource("1_j17lp")]
 script = ExtResource("2_8vb07")
