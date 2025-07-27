@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://b7xwpb6f867lh"]
+[gd_scene load_steps=4 format=3 uid="uid://b7xwpb6f867lh"]
 
 [ext_resource type="PackedScene" uid="uid://pavgwd0djbid" path="res://scenes/controllers/main_controller.tscn" id="1_j17lp"]
 [ext_resource type="Script" path="res://scripts/main_controller.gd" id="2_8vb07"]
+[ext_resource type="Script" path="res://scenes/ui_controller.gd" id="3_7biaq"]
 
 [node name="Root" type="Node"]
 
@@ -9,6 +10,7 @@
 script = ExtResource("2_8vb07")
 
 [node name="UI" type="Node" parent="MainController"]
+script = ExtResource("3_7biaq")
 
 [node name="MultiplayerOptionMenu" type="VBoxContainer" parent="MainController/UI"]
 visible = false
@@ -34,11 +36,89 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 48
 text = "Host"
 
+[node name="MultiplayerConnectMenu" type="VBoxContainer" parent="MainController/UI"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -77.0
+offset_right = 150.0
+offset_bottom = 77.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Address" type="LineEdit" parent="MainController/UI/MultiplayerConnectMenu"]
+layout_mode = 2
+placeholder_text = "Address"
+max_length = 100
+
+[node name="Port" type="LineEdit" parent="MainController/UI/MultiplayerConnectMenu"]
+layout_mode = 2
+placeholder_text = "Port"
+max_length = 5
+
+[node name="ConnectConfirm" type="Button" parent="MainController/UI/MultiplayerConnectMenu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Connect"
+
+[node name="MarginContainer" type="MarginContainer" parent="MainController/UI/MultiplayerConnectMenu"]
+layout_mode = 2
+theme_override_constants/margin_top = 20
+
+[node name="BackToMultiplayer" type="Button" parent="MainController/UI/MultiplayerConnectMenu/MarginContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Back"
+
+[node name="MultiplayerHostMenu" type="VBoxContainer" parent="MainController/UI"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -77.0
+offset_right = 150.0
+offset_bottom = 77.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Port" type="LineEdit" parent="MainController/UI/MultiplayerHostMenu"]
+layout_mode = 2
+placeholder_text = "Port"
+max_length = 5
+
+[node name="HostConfirm" type="Button" parent="MainController/UI/MultiplayerHostMenu"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Host"
+
+[node name="MarginContainer" type="MarginContainer" parent="MainController/UI/MultiplayerHostMenu"]
+layout_mode = 2
+theme_override_constants/margin_top = 20
+
+[node name="BackToMultiplayer" type="Button" parent="MainController/UI/MultiplayerHostMenu/MarginContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Back"
+
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="MainController"]
 _spawnable_scenes = PackedStringArray("res://scenes/objects/player.tscn", "res://scenes/objects/projectile.tscn")
 spawn_path = NodePath("../Map")
 
 [node name="Map" type="Node2D" parent="MainController"]
 
-[connection signal="pressed" from="MainController/UI/MultiplayerOptionMenu/Connect" to="MainController" method="on_connect_pressed"]
-[connection signal="pressed" from="MainController/UI/MultiplayerOptionMenu/Host" to="MainController" method="on_host_pressed"]
+[connection signal="match_started" from="MainController" to="MainController/UI" method="_on_main_controller_match_started"]
+[connection signal="connect" from="MainController/UI" to="MainController" method="_on_ui_connect"]
+[connection signal="host" from="MainController/UI" to="MainController" method="_on_ui_host"]
+[connection signal="pressed" from="MainController/UI/MultiplayerOptionMenu/Connect" to="MainController/UI" method="_on_connect_pressed"]
+[connection signal="pressed" from="MainController/UI/MultiplayerOptionMenu/Host" to="MainController/UI" method="_on_host_pressed"]
+[connection signal="pressed" from="MainController/UI/MultiplayerConnectMenu/ConnectConfirm" to="MainController/UI" method="_on_connect_confirm_pressed"]
+[connection signal="pressed" from="MainController/UI/MultiplayerConnectMenu/MarginContainer/BackToMultiplayer" to="MainController/UI" method="_on_back_to_multiplayer_pressed"]
+[connection signal="pressed" from="MainController/UI/MultiplayerHostMenu/HostConfirm" to="MainController/UI" method="_on_host_confirm_pressed"]
+[connection signal="pressed" from="MainController/UI/MultiplayerHostMenu/MarginContainer/BackToMultiplayer" to="MainController/UI" method="_on_back_to_multiplayer_pressed"]

@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://blc8dfc0kunat"]
+[gd_scene load_steps=9 format=3 uid="uid://blc8dfc0kunat"]
 
 [ext_resource type="PhysicsMaterial" uid="uid://bpmgb7j5k4ffn" path="res://resources/materials/smooth.tres" id="1_yfus1"]
 [ext_resource type="Script" path="res://scripts/player.gd" id="2_2ld3c"]
 [ext_resource type="Texture2D" uid="uid://bpc8xflbut845" path="res://assets/textures/player.png" id="3_ibef5"]
 [ext_resource type="Script" path="res://scripts/ammo_indicator.gd" id="4_6jglu"]
 [ext_resource type="PackedScene" uid="uid://jah6fajt0wlt" path="res://scenes/controllers/physics_synchronizer.tscn" id="5_dm32l"]
+[ext_resource type="PackedScene" uid="uid://vn3w66gradcl" path="res://scenes/controllers/edge_warp.tscn" id="6_cei40"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ottf4"]
 radius = 40.0
@@ -48,3 +49,5 @@ script = ExtResource("4_6jglu")
 replication_config = SubResource("SceneReplicationConfig_htwdw")
 
 [node name="PhysicsSynchronizer" parent="." instance=ExtResource("5_dm32l")]
+
+[node name="EdgeWarp" parent="." instance=ExtResource("6_cei40")]

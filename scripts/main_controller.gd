@@ -1,63 +1,56 @@
 extends Node
 
+signal match_started
 
-const PORT = 55555
 const PLAYER_SCENE = preload("res://scenes/objects/player.tscn")
 
-@onready var multiplayer_option_menu = $UI/MultiplayerOptionMenu
 @onready var map = $Map
 
 
-func _ready():
-	multiplayer_option_menu.visible = true
-
-
-func on_peer_connected(id: int) -> void:
+func _on_peer_connected(id: int) -> void:
 	add_player(id)
 
 
-func on_peer_disconnected(id: int) -> void:
+func _on_peer_disconnected(id: int) -> void:
 	delete_player(id)
 
 
-func on_connect_pressed() -> void:
+func _on_ui_connect(address: String, port: int) -> void:
 	var peer = ENetMultiplayerPeer.new()
-	var ip = "127.0.0.1"
-	peer.create_client(ip, PORT)
-	multiplayer.connect("connected_to_server", on_connected_to_server)
-	multiplayer.connect("connection_failed", on_connection_failed)
-	multiplayer.connect("server_disconnected", on_server_disconnected)
+	peer.create_client(address, port)
+	multiplayer.connect("connected_to_server", _on_connected_to_server)
+	multiplayer.connect("connection_failed", _on_connection_failed)
+	multiplayer.connect("server_disconnected", _on_server_disconnected)
 	multiplayer.multiplayer_peer = peer
-	multiplayer_option_menu.visible = false
 
 
-func on_connected_to_server() -> void:
+func _on_connected_to_server() -> void:
+	match_started.emit()
 	print("connected to server")
 
 
-func on_connection_failed() -> void:
+func _on_connection_failed() -> void:
 	multiplayer.multiplayer_peer = null
-	multiplayer_option_menu.visible = true
+	print("failed to connect to server")
 
 
-func on_server_disconnected() -> void:
-	multiplayer.disconnect("connected_to_server", on_connected_to_server)
-	multiplayer.disconnect("connection_failed", on_connection_failed)
-	multiplayer.disconnect("server_disconnected", on_server_disconnected)
+func _on_server_disconnected() -> void:
+	multiplayer.disconnect("connected_to_server", _on_connected_to_server)
+	multiplayer.disconnect("connection_failed", _on_connection_failed)
+	multiplayer.disconnect("server_disconnected", _on_server_disconnected)
 	multiplayer.multiplayer_peer = null
-	multiplayer_option_menu.visible = true
 
 
-func on_host_pressed() -> void:
+func _on_ui_host(port: int) -> void:
 	var peer = ENetMultiplayerPeer.new()
-	peer.create_server(PORT)
+	peer.create_server(port)
 	multiplayer.multiplayer_peer = peer
-	multiplayer.connect("peer_connected", on_peer_connected)
-	multiplayer.connect("peer_disconnected", on_peer_disconnected)
-	print("hosting on port ", PORT)
-	multiplayer_option_menu.visible = false
+	multiplayer.connect("peer_connected", _on_peer_connected)
+	multiplayer.connect("peer_disconnected", _on_peer_disconnected)
+	print("hosting on port ", port)
 	if not OS.has_feature("dedicated_server"):
 		add_player(1)
+	match_started.emit()
 
 
 func add_player(id: int) -> void:
@@ -78,5 +71,5 @@ func delete_player(id: int) -> void:
 func _exit_tree():
 	if not multiplayer.is_server():
 		return
-	multiplayer.disconnect("peer_connected", on_peer_connected)
-	multiplayer.disconnect("peer_disconnected", on_peer_disconnected)
+	multiplayer.disconnect("peer_connected", _on_peer_connected)
+	multiplayer.disconnect("peer_disconnected", _on_peer_disconnected)

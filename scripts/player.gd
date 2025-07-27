@@ -18,6 +18,7 @@ const reload_time = 1
 @onready var synchronizer = $MultiplayerSynchronizer
 @onready var physics_synchronizer = $PhysicsSynchronizer
 @onready var ammo_indicator = $AmmoIndicator
+@onready var edge_warp = $EdgeWarp
 @onready var hb_radius: float = $CollisionShape2D.shape.radius
 @onready var projectile_mass: float = projectile_scene.instantiate().mass
 
@@ -32,14 +33,14 @@ func _ready():
 	reload_timer.timeout.connect(reload)
 	add_child(reload_timer)
 	reload_timer.start(time_until_reload)
-	connect("body_entered", on_collision)
+	connect("body_entered", _on_collision)
 	ammo_indicator.init_ammo_indicator(self, ammo, max_ammo)
 	set_multiplayer_authority(id, false)
 	synchronizer.set_multiplayer_authority(1)
 	physics_synchronizer.set_multiplayer_authority(1)
 	set_process_input(get_multiplayer_authority() == \
 		multiplayer.get_unique_id())
-	set_physics_process(multiplayer.is_server())
+	set_process(multiplayer.is_server())
 
 
 func _input(event):
@@ -53,15 +54,16 @@ func _input(event):
 				shoot.rpc()
 
 
-func _physics_process(_delta):
-	physics_synchronizer.server_physics_sync(self)
+func _process(_delta):
 	time_until_reload = reload_timer.time_left
 	if time_until_reload == 0:
 		time_until_reload = reload_time
 
 
 func _integrate_forces(_state):
-	if physics_synchronizer.client_physics_sync(self):
+	if multiplayer.is_server():
+		edge_warp.warp(self)
+	if physics_synchronizer.physics_sync(self):
 		ang_vel = angular_velocity
 	else:
 		angular_velocity = ang_vel
@@ -111,6 +113,6 @@ func reload() -> void:
 		reload_timer.start(reload_time)
 
 
-func on_collision(body: Node) -> void:
+func _on_collision(body: Node) -> void:
 	if body.is_in_group("damage") and multiplayer.is_server():
 		queue_free()
