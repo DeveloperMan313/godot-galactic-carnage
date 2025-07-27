@@ -1,18 +1,15 @@
 extends Node
 
-signal match_started
 
-const PLAYER_SCENE = preload("res://scenes/objects/player.tscn")
-
-@onready var map = $Map
+@onready var room = $"../Room"
 
 
 func _on_peer_connected(id: int) -> void:
-	add_player(id)
+	room.add_player(id)
 
 
 func _on_peer_disconnected(id: int) -> void:
-	delete_player(id)
+	room.delete_player(id)
 
 
 func _on_ui_connect(address: String, port: int) -> void:
@@ -25,7 +22,7 @@ func _on_ui_connect(address: String, port: int) -> void:
 
 
 func _on_connected_to_server() -> void:
-	match_started.emit()
+	room.start_match()
 	print("connected to server")
 
 
@@ -49,23 +46,8 @@ func _on_ui_host(port: int) -> void:
 	multiplayer.connect("peer_disconnected", _on_peer_disconnected)
 	print("hosting on port ", port)
 	if not OS.has_feature("dedicated_server"):
-		add_player(1)
-	match_started.emit()
-
-
-func add_player(id: int) -> void:
-	var player = PLAYER_SCENE.instantiate()
-	player.id = id
-	player.name = str(id)
-	player.position = Vector2(200, 200)
-	map.add_child(player)
-
-
-func delete_player(id: int) -> void:
-	var player_name = str(id)
-	if not map.has_node(player_name):
-		return
-	map.get_node(player_name).queue_free()
+		room.add_player(1)
+	room.start_match()
 
 
 func _exit_tree():

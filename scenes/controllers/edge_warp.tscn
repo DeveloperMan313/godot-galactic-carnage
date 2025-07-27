@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://vn3w66gradcl"]
 
-[ext_resource type="Script" path="res://edge_warp.gd" id="1_w6p0e"]
+[ext_resource type="Script" path="res://scripts/edge_warp.gd" id="1_w6p0e"]
 
 [node name="EdgeWarp" type="Node"]
 script = ExtResource("1_w6p0e")
