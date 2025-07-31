@@ -1,5 +1,6 @@
 extends Node
 
+
 signal match_started
 
 const PLAYER_SCENE = preload("res://scenes/objects/player.tscn")
@@ -12,6 +13,7 @@ func add_player(id: int) -> void:
 	player.id = id
 	player.name = str(id)
 	player.position = Vector2(200, 200)
+	player.color = Color(randf(), randf(), randf())
 	map.add_child(player, true)
 
 

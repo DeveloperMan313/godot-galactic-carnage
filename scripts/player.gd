@@ -1,3 +1,4 @@
+class_name GamePlayer
 extends RigidBody2D
 
 
@@ -12,12 +13,17 @@ const max_ammo = 3
 const reload_time = 1
 
 @export var id := 1
+@export var slot_idx := 0
+@export var color := Color.WHITE
 @export var ammo := 0
 @export var time_until_reload = reload_time
 
+@onready var room = $"/root/Main/Room"
 @onready var physics_synchronizer = $PhysicsSynchronizer
+@onready var player_controllers = $"/root/Main/UI/PlayerControllers"
 @onready var ammo_indicator = $AmmoIndicator
 @onready var edge_warp = $EdgeWarp
+@onready var shader_material = $Sprite2D.material
 @onready var hb_radius: float = $CollisionShape2D.shape.radius
 @onready var projectile_mass: float = projectile_scene.instantiate().mass
 
@@ -27,6 +33,7 @@ var reload_timer := Timer.new()
 
 
 func _ready():
+	shader_material.set_shader_parameter("color", color)
 	reload_timer.one_shot = true
 	reload_timer.timeout.connect(reload)
 	add_child(reload_timer)
@@ -35,17 +42,20 @@ func _ready():
 	ammo_indicator.init_ammo_indicator(self, ammo, max_ammo)
 	set_process_input(multiplayer.get_unique_id() == id)
 	set_process(multiplayer.is_server())
+	if multiplayer.get_unique_id() == id:
+		player_controllers.bind_controller_to_player(self)
 
 
-func _input(event):
-	if event is InputEventMouseButton:
-		if event.button_index == 1:
-			if event.pressed:
-				start_rotation.rpc()
-			else:
-				stop_rotation.rpc()
-		elif event.button_index == 2 and event.pressed:
-				shoot.rpc()
+func _on_player_controller_rotation_start():
+	start_rotation.rpc()
+
+
+func _on_player_controller_rotation_stop():
+	stop_rotation.rpc()
+
+
+func _on_player_controller_shoot():
+	shoot.rpc()
 
 
 func _process(_delta):
@@ -65,18 +75,32 @@ func _integrate_forces(_state):
 		- friction * linear_velocity)
 
 
+func catch_cheater() -> bool:
+	var remote_id := multiplayer.get_remote_sender_id()
+	if remote_id != id:
+		multiplayer.multiplayer_peer.disconnect_peer(remote_id)
+		return true
+	return false
+
+
 @rpc("any_peer", "call_local", "reliable")
 func start_rotation() -> void:
+	if catch_cheater():
+		return
 	ang_vel = rot_dir * rot_speed
 
 
 @rpc("any_peer", "call_local", "reliable")
 func stop_rotation() -> void:
+	if catch_cheater():
+		return
 	ang_vel = 0
 
 
 @rpc("any_peer", "call_local", "reliable")
 func shoot() -> void:
+	if catch_cheater():
+		return
 	reload_timer.start(reload_time)
 	if ammo == 0:
 		return

@@ -1,17 +1,39 @@
-[gd_scene load_steps=6 format=3 uid="uid://b7xwpb6f867lh"]
+[gd_scene load_steps=12 format=3 uid="uid://b7xwpb6f867lh"]
 
-[ext_resource type="PackedScene" uid="uid://pavgwd0djbid" path="res://scenes/controllers/network.tscn" id="1_j17lp"]
-[ext_resource type="Script" path="res://scripts/network.gd" id="2_8vb07"]
-[ext_resource type="PackedScene" uid="uid://dvxmsq43qax2l" path="res://scenes/controllers/player_controller.tscn" id="2_tg68u"]
-[ext_resource type="Script" path="res://scripts/ui_multiplayer.gd" id="3_7biaq"]
-[ext_resource type="PackedScene" uid="uid://drijtvn1ctpuw" path="res://scenes/objects/room.tscn" id="4_osgil"]
+[ext_resource type="Script" path="res://scripts/ui_multiplayer.gd" id="1_sb7dd"]
+[ext_resource type="Script" path="res://scripts/ui_player_controllers.gd" id="2_eu5xc"]
+[ext_resource type="PackedScene" uid="uid://dvxmsq43qax2l" path="res://scenes/controllers/player_controller.tscn" id="3_e3aig"]
+[ext_resource type="Shader" path="res://resources/materials/colorize.gdshader" id="4_3peqe"]
+[ext_resource type="PackedScene" uid="uid://pavgwd0djbid" path="res://scenes/controllers/network.tscn" id="4_4fkbw"]
+[ext_resource type="Script" path="res://scripts/network.gd" id="5_ol7es"]
+[ext_resource type="PackedScene" uid="uid://drijtvn1ctpuw" path="res://scenes/objects/room.tscn" id="6_ab8qd"]
 
-[node name="Root" type="Node"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_syorq"]
+resource_local_to_scene = true
+shader = ExtResource("4_3peqe")
+shader_parameter/color = Color(1, 1, 1, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_j1woc"]
+resource_local_to_scene = true
+shader = ExtResource("4_3peqe")
+shader_parameter/color = Color(1, 1, 1, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ulw8c"]
+resource_local_to_scene = true
+shader = ExtResource("4_3peqe")
+shader_parameter/color = Color(1, 1, 1, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bsv26"]
+resource_local_to_scene = true
+shader = ExtResource("4_3peqe")
+shader_parameter/color = Color(1, 1, 1, 1)
+
+[node name="Main" type="Node"]
 
 [node name="UI" type="Node" parent="."]
 
 [node name="Multiplayer" type="Node" parent="UI"]
-script = ExtResource("3_7biaq")
+script = ExtResource("1_sb7dd")
 
 [node name="OptionMenu" type="VBoxContainer" parent="UI/Multiplayer"]
 visible = false
@@ -108,13 +130,36 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 48
 text = "Back"
 
-[node name="PlayerController" parent="UI" instance=ExtResource("2_tg68u")]
-color = Color(1, 0.45098, 0, 1)
+[node name="PlayerControllers" type="Node" parent="UI"]
+script = ExtResource("2_eu5xc")
 
-[node name="Network" parent="." instance=ExtResource("1_j17lp")]
-script = ExtResource("2_8vb07")
+[node name="Controller0" parent="UI/PlayerControllers" instance=ExtResource("3_e3aig")]
+material = SubResource("ShaderMaterial_syorq")
 
-[node name="Room" parent="." instance=ExtResource("4_osgil")]
+[node name="Controller1" parent="UI/PlayerControllers" instance=ExtResource("3_e3aig")]
+material = SubResource("ShaderMaterial_j1woc")
+offset_left = 800.0
+offset_right = 160.0
+scale = Vector2(-1, 1)
+
+[node name="Controller2" parent="UI/PlayerControllers" instance=ExtResource("3_e3aig")]
+material = SubResource("ShaderMaterial_ulw8c")
+offset_left = 800.0
+offset_top = 600.0
+offset_right = 160.0
+offset_bottom = 80.0
+scale = Vector2(-1, -0.999999)
+
+[node name="Controller3" parent="UI/PlayerControllers" instance=ExtResource("3_e3aig")]
+material = SubResource("ShaderMaterial_bsv26")
+offset_top = 600.0
+offset_bottom = 80.0
+scale = Vector2(0.999996, -0.999999)
+
+[node name="Network" parent="." instance=ExtResource("4_4fkbw")]
+script = ExtResource("5_ol7es")
+
+[node name="Room" parent="." instance=ExtResource("6_ab8qd")]
 
 [connection signal="connect" from="UI/Multiplayer" to="Network" method="_on_ui_connect"]
 [connection signal="host" from="UI/Multiplayer" to="Network" method="_on_ui_host"]
